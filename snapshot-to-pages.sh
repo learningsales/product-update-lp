@@ -22,8 +22,12 @@ CONTENT_ID="${1:?使い方: snapshot-to-pages.sh <contentId> <YYYY-MM> [説明�
 MONTH_DIR="${2:?使い方: snapshot-to-pages.sh <contentId> <YYYY-MM> [説明文]}"
 DESC="${3:-操作デモ付き}"
 
-# YYYY-MM の形式チェック
-[[ "$MONTH_DIR" =~ ^[0-9]{4}-[0-9]{2}$ ]] || { echo "第2引数は YYYY-MM 形式で指定してください（例: 2026-08）"; exit 1; }
+# YYYY-MM の形式チェック。レビュー用は YYYY-MM-draft のようなサフィックスを許す
+[[ "$MONTH_DIR" =~ ^[0-9]{4}-[0-9]{2}(-[a-z0-9-]+)?$ ]] || { echo "第2引数は YYYY-MM 形式で指定してください（レビュー用は 2026-08-draft のようなサフィックス可）"; exit 1; }
+
+# サフィックス付き＝レビュー用。号の一覧には載せない（URLを知っている人だけが見る）
+IS_PREVIEW=false
+[[ "$MONTH_DIR" =~ ^[0-9]{4}-[0-9]{2}$ ]] || IS_PREVIEW=true
 
 cd "$LP_DIR"
 
@@ -51,6 +55,9 @@ cp dist-static/favicon.png dist-static/favicon.svg dist-static/icons.svg dist-st
 cp dist-static/index.static.html "$DEST/index.html"
 echo "  ✓ 配置完了"
 
+if [ "$IS_PREVIEW" = true ]; then
+  echo "▶ 4/4 レビュー用のため一覧(index.html)には追加しない"
+else
 echo "▶ 4/4 一覧(index.html)にリンク追加（重複時はスキップ）"
 python3 - "$PAGES_DIR/index.html" "$MONTH_DIR" "$DESC" <<'PY'
 import sys, re
@@ -70,7 +77,9 @@ PY
 
 echo ""
 echo "── 完了 ──"
-echo "本番URL(反映まで1分程): https://makinanishi-create.github.io/plainer-prototypes/product-update/$MONTH_DIR/"
+fi
+
+echo "URL(反映まで1分程): https://makinanishi-create.github.io/plainer-prototypes/product-update/$MONTH_DIR/"
 echo ""
 echo "目視OKなら push:"
 echo "  cd $PAGES_ROOT && git add product-update && git commit -m \"product-update: ${label:-$MONTH_DIR}号を追加\" && git push"
