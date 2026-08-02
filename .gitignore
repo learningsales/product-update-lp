@@ -1,0 +1,33 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+.env.local
+
+# 静的スナップショットのビルド成果物（snapshot-to-pages.sh が生成）
+dist-static
+
+# 号の中身（snapshot-to-pages.sh がmicroCMSから毎回取得して上書きする）。
+# 下書き状態の号も入るため、公開リポジトリに置くと未発表の機能が漏れる。
+src/release-data.json
