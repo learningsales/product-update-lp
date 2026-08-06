@@ -85,7 +85,12 @@ function DemoFrame({ url, heading }) {
     <div className="demo">
       <div className="demo-label">
         <span className="rec" />
-        {url ? "操作デモ（触って試せます）" : "デモ準備中"}
+        <span>{url ? "操作デモ（触って試せます）" : "デモ準備中"}</span>
+        {url && (
+          <a className="demo-open" href={url} target="_blank" rel="noopener noreferrer">
+            別タブで大きく開く<span aria-hidden="true">↗</span>
+          </a>
+        )}
       </div>
       <div className="frame">
         <div className="chrome">
@@ -94,7 +99,13 @@ function DemoFrame({ url, heading }) {
             <i />
             <i />
           </span>
-          <span className="url">product.plainer.co.jp</span>
+          {url ? (
+            <a className="url" href={url} target="_blank" rel="noopener noreferrer">
+              product.plainer.co.jp
+            </a>
+          ) : (
+            <span className="url">product.plainer.co.jp</span>
+          )}
           <span className="live">DEMO</span>
         </div>
         {url ? (
