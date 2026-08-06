@@ -58,7 +58,11 @@ function renderPoint(line, i) {
   );
 }
 
-function DemoFrame({ url, heading }) {
+function DemoFrame({ url, linkUrl, heading }) {
+  // 飛び先は「実際に触れるデモ」を別に持たせる想定（demoLinkUrl）。
+  // まだ用意できていない機能は、埋め込みと同じデモを実物大で開くところまでは担保する。
+  const openUrl = linkUrl || url;
+  const openLabel = linkUrl ? "実際のデモを開く" : "別タブで大きく開く";
   const shellRef = useRef(null);
   const [width, setWidth] = useState(0);
 
@@ -86,9 +90,10 @@ function DemoFrame({ url, heading }) {
       <div className="demo-label">
         <span className="rec" />
         <span>{url ? "操作デモ（触って試せます）" : "デモ準備中"}</span>
-        {url && (
-          <a className="demo-open" href={url} target="_blank" rel="noopener noreferrer">
-            別タブで大きく開く<span aria-hidden="true">↗</span>
+        {openUrl && (
+          <a className="demo-open" href={openUrl} target="_blank" rel="noopener noreferrer">
+            {openLabel}
+            <span aria-hidden="true">↗</span>
           </a>
         )}
       </div>
@@ -99,8 +104,8 @@ function DemoFrame({ url, heading }) {
             <i />
             <i />
           </span>
-          {url ? (
-            <a className="url" href={url} target="_blank" rel="noopener noreferrer">
+          {openUrl ? (
+            <a className="url" href={openUrl} target="_blank" rel="noopener noreferrer">
               product.plainer.co.jp
             </a>
           ) : (
@@ -147,7 +152,7 @@ function FeatureBlock({ feature, index, reversed }) {
           {feature.body && <p className="body">{feature.body}</p>}
           {points.length > 0 && <div className="points">{points.map(renderPoint)}</div>}
         </div>
-        <DemoFrame url={feature.demoUrl} heading={feature.heading} />
+        <DemoFrame url={feature.demoUrl} linkUrl={feature.demoLinkUrl} heading={feature.heading} />
       </div>
     </article>
   );
