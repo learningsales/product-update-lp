@@ -180,7 +180,7 @@ export default function ReleaseLP({ data }) {
   }
 
   const Logo = ({ h = 26 }) => (
-    <img className="logo-img" src="plainer_logo.svg" alt="PLAINER" style={{ height: h }} />
+    <img className="logo-img" src={`${import.meta.env.BASE_URL}plainer_logo.svg`} alt="PLAINER" style={{ height: h }} />
   );
 
   return (
