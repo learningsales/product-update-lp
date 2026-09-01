@@ -41,14 +41,25 @@ fi
 echo "▶ 2/3 静的ビルド (base=$BASE)"
 npx vite build --config vite.config.static.js --base="$BASE" >/dev/null
 
-# favicon だけは index.html に直書きの相対パスが残るので絶対パスへ寄せる
-python3 - "$BASE" <<'PY'
-import sys
-base = sys.argv[1]
+# favicon の相対パスを絶対へ寄せ、<title> に対象月を入れる。
+#
+# **title は必ずここで入れる。** テンプレートに月を直書きしていた時期があり、
+# どの号を焼いても「2026年7月」が出続けた。本文は正しいのでタブ・ブックマーク・
+# シェアだけが古いまま残り、公開するまで誰も気づかない。差し込めなければここで落とす。
+python3 - "$BASE" "$MONTH" <<'PY'
+import re, sys
+base, month = sys.argv[1], sys.argv[2]
 p = 'dist-static/index.static.html'
 s = open(p, encoding='utf-8').read()
 s = s.replace('href="./favicon.png"', f'href="{base}favicon.png"')
+
+y, m = month.split('-')
+title = f'プロダクトアップデート {int(y)}年{int(m)}月 | PLAINER'
+s, n = re.subn(r'<title>.*?</title>', f'<title>{title}</title>', s, count=1, flags=re.S)
+if n != 1:
+    sys.exit('  ✗ <title> を差し替えられませんでした（テンプレートを確認してください）')
 open(p, 'w', encoding='utf-8').write(s)
+print(f'  title: {title}')
 PY
 
 echo "▶ 3/3 配置: $DEST"
