@@ -145,8 +145,11 @@ function DemoFrame({ url, linkUrl, heading }) {
 function FeatureBlock({ feature, index, reversed }) {
   const tag = firstValue(feature.tag);
   const points = (feature.points || "").split("\n").map((l) => l.trim()).filter(Boolean);
+  // 設定機能などデモを作らないと決めた回は demoUrl に none を入れる。
+  // 空のままにすると「この機能の操作デモは準備中です」が公開後もずっと出続ける。
+  const noDemo = String(feature.demoUrl || "").trim().toLowerCase() === "none";
   return (
-    <article className={`feat${reversed ? " rev" : ""}`}>
+    <article className={`feat${reversed ? " rev" : ""}${noDemo ? " no-demo" : ""}`}>
       <div className="feat-grid">
         <div className="feat-txt">
           <span className="num">
@@ -157,7 +160,9 @@ function FeatureBlock({ feature, index, reversed }) {
           {feature.body && <p className="body">{feature.body}</p>}
           {points.length > 0 && <div className="points">{points.map(renderPoint)}</div>}
         </div>
-        <DemoFrame url={feature.demoUrl} linkUrl={feature.demoLinkUrl} heading={feature.heading} />
+        {!noDemo && (
+          <DemoFrame url={feature.demoUrl} linkUrl={feature.demoLinkUrl} heading={feature.heading} />
+        )}
       </div>
     </article>
   );
