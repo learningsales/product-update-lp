@@ -61,8 +61,13 @@ function renderPoint(line, i) {
 function DemoFrame({ url, linkUrl, heading }) {
   // 飛び先は「実際に触れるデモ」を別に持たせる想定（demoLinkUrl）。
   // まだ用意できていない機能は、埋め込みと同じデモを実物大で開くところまでは担保する。
-  const openUrl = linkUrl || url;
-  const openLabel = linkUrl ? "実際のデモを開く" : "別タブで大きく開く";
+  //
+  // ただし「見た目の変化」を見せる回など、そもそも遷移させたくない機能がある。
+  // その場合は demoLinkUrl（トラッカーの「実デモURL」）に none と入れる。
+  // 空にするだけだと埋め込みデモへのフォールバックが働いてリンクが出てしまう。
+  const noLink = String(linkUrl || "").trim().toLowerCase() === "none";
+  const openUrl = noLink ? null : linkUrl || url;
+  const openLabel = linkUrl && !noLink ? "実際のデモを開く" : "別タブで大きく開く";
   const shellRef = useRef(null);
   const [width, setWidth] = useState(0);
 
