@@ -68,6 +68,10 @@ function DemoFrame({ url, linkUrl, heading }) {
   const noLink = String(linkUrl || "").trim().toLowerCase() === "none";
   const openUrl = noLink ? null : linkUrl || url;
   const openLabel = linkUrl && !noLink ? "実際のデモを開く" : "別タブで大きく開く";
+  // 見せ方の違う2種類がある。オートモード（?autoplayloop=true）は再生されるだけで
+  // 触れないので「触って試せます」と書くと嘘になる。画面の変化を見せる回で使う。
+  const autoplay = /[?&]autoplayloop=true/i.test(String(url || ""));
+  const demoLabel = autoplay ? "操作イメージ（自動再生）" : "操作デモ（触って試せます）";
   const shellRef = useRef(null);
   const [width, setWidth] = useState(0);
 
@@ -94,7 +98,7 @@ function DemoFrame({ url, linkUrl, heading }) {
     <div className="demo">
       <div className="demo-label">
         <span className="rec" />
-        <span>{url ? "操作デモ（触って試せます）" : "デモ準備中"}</span>
+        <span>{url ? demoLabel : "デモ準備中"}</span>
         {openUrl && (
           <a className="demo-open" href={openUrl} target="_blank" rel="noopener noreferrer">
             {openLabel}
