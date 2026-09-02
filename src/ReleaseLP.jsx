@@ -145,9 +145,12 @@ function DemoFrame({ url, linkUrl, heading }) {
 function FeatureBlock({ feature, index, reversed }) {
   const tag = firstValue(feature.tag);
   const points = (feature.points || "").split("\n").map((l) => l.trim()).filter(Boolean);
-  // 設定機能などデモを作らないと決めた回は demoUrl に none を入れる。
-  // 空のままにすると「この機能の操作デモは準備中です」が公開後もずっと出続ける。
-  const noDemo = String(feature.demoUrl || "").trim().toLowerCase() === "none";
+  // デモが無い機能は、デモ枠ごと出さない。
+  // 「操作デモ（触って試せます）」も「デモ準備中」も、デモが無いのに枠だけ残ると
+  // 顧客からは「いつまで準備中なのか」に見える。
+  // demoUrl が空（未納品）でも none（作らないと決めた回）でも、扱いは同じ。
+  const noDemo = !String(feature.demoUrl || "").trim()
+    || String(feature.demoUrl).trim().toLowerCase() === "none";
   return (
     <article className={`feat${reversed ? " rev" : ""}${noDemo ? " no-demo" : ""}`}>
       <div className="feat-grid">
