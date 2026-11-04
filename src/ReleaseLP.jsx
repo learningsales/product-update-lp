@@ -8,6 +8,8 @@ const SECTION_ORDER = ["すぐ使える", "要契約"];
 // 新機能を先、改善を後に並べる。セクション内で混在すると「これは新機能なのか
 // 小さな改善なのか」が読み手に伝わらないため、タグごとに塊で見せる。
 const TAG_ORDER = ["新機能", "改善"];
+// 「対象」（microCMS の target）は、一部の体験タイプ（Playground など）だけに効く項目に付ける。
+// 新機能／改善のタグとは別の軸なので置き換えず、横に並べて出す。空なら何も出さない。
 const TAG_META = {
   新機能: { cls: "new", lead: "今月から新しくお使いいただける機能です。" },
   改善: { cls: "imp", lead: "既存の機能をより使いやすくしました。" },
@@ -148,6 +150,7 @@ function DemoFrame({ url, linkUrl, heading }) {
 
 function FeatureBlock({ feature, index, reversed }) {
   const tag = firstValue(feature.tag);
+  const target = firstValue(feature.target);
   const points = (feature.points || "").split("\n").map((l) => l.trim()).filter(Boolean);
   // デモが無い機能は、デモ枠ごと出さない。
   // 「操作デモ（触って試せます）」も「デモ準備中」も、デモが無いのに枠だけ残ると
@@ -162,6 +165,7 @@ function FeatureBlock({ feature, index, reversed }) {
           <span className="num">
             <b>{index}</b>
             <span className={`tag ${tag === "新機能" ? "new" : "imp"}`}>{tag}</span>
+            {target && <span className="tag target">{target}</span>}
           </span>
           <h3>{feature.heading}</h3>
           {feature.body && <p className="body">{feature.body}</p>}
@@ -248,7 +252,10 @@ export default function ReleaseLP({ data }) {
                         <a className="ix-card" key={num}>
                           <span className="ix">{num}</span>
                           <span className="tx">{f.heading}</span>
-                          <span className={`tag ${TAG_META[t]?.cls || "imp"}`}>{t}</span>
+                          <span className="ix-tags">
+                            <span className={`tag ${TAG_META[t]?.cls || "imp"}`}>{t}</span>
+                            {firstValue(f.target) && <span className="tag target">{firstValue(f.target)}</span>}
+                          </span>
                         </a>
                       );
                     })}
