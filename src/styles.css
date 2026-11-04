@@ -129,4 +129,6 @@ a.url:hover{color:var(--go-deep);border-color:var(--go)}
 .tag-group-lead{font-size:13px;color:var(--muted)}
 /* タグは見出しの上・番号の右に置く。横に並べると見出しの折返しが増えて読めない。 */
 .ix-card .tag{grid-column:2;grid-row:1;justify-self:start;margin:0}
+.ix-card .ix-tags{grid-column:2;grid-row:1;display:flex;gap:6px;flex-wrap:wrap}
+.tag.target{color:var(--ink);background:var(--card);border:1px solid var(--line)}
 .ix-card .tx{grid-column:2;grid-row:2}
